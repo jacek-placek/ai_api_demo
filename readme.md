@@ -1,4 +1,4 @@
-# Demo API – Reference Documentation
+# Demo API – Reference Documentation v1.0
 
 ## 1. Overview
 
