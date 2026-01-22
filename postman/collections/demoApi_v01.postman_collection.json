@@ -1,0 +1,219 @@
+{
+  "info": {
+    "_postman_id": "76ef57a0-1303-4b8c-8c57-963c332e09e4",
+    "name": "demoApi_v01",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Users - paginated",
+      "id": "287e6b1e-bd30-4e1d-8fe3-304866ba5fbb",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/users",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Users - unpaginated",
+      "id": "0bc4c6fb-cf93-4d98-8d06-08e748df4c33",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"JA Demo\",\"job\":\"QA Lead\"}"
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/users/all",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "all"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create User",
+      "id": "f2ed8119-6306-4355-ae13-eabf1365298c",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Kaziu Wichura\",\"job\":\"Digger\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/users",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        },
+        "description": "Generated from cURL: curl -s -X POST http://localhost:3000/api/users \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"name\":\"JA Demo\",\"job\":\"QA Lead\"}'"
+      },
+      "response": []
+    },
+    {
+      "name": "Invalid Login",
+      "id": "d1d890e5-66f5-4a3f-b42e-08a6da97f979",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"eve.holt@reqres.in\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/login",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "login"
+          ]
+        },
+        "description": "Generated from cURL: curl -s -X POST http://localhost:3000/api/login \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"email\":\"eve.holt@reqres.in\"}'"
+      },
+      "response": []
+    },
+    {
+      "name": "successful login",
+      "id": "30c7b791-638f-4b72-8717-59add9342cab",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"eve.holt@reqres.in\",\"password\":\"cityslicka\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "login"
+          ]
+        },
+        "description": "Generated from cURL: curl -s -X POST http://localhost:3000/api/login \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"email\":\"eve.holt@reqres.in\",\"password\":\"cityslicka\"}'"
+      },
+      "response": []
+    },
+    {
+      "name": "delete user",
+      "id": "d745d7d2-7039-443b-937a-5ba054675f5a",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/users",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "users"
+          ]
+        },
+        "description": "Generated from cURL: curl -i -X DELETE http://localhost:3000/api/users/2"
+      },
+      "response": []
+    },
+    {
+      "name": "/health",
+      "id": "5a50635c-25bb-4ebc-b984-876e78204371",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "id": "6bc4c552-6615-45ed-8ae5-fded1f5d1232",
+      "key": "baseURL",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

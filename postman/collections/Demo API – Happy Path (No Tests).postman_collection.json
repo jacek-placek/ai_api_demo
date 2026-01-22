@@ -1,0 +1,266 @@
+{
+  "info": {
+    "_postman_id": "5c3bc94c-e16c-437e-bd70-35878190d15f",
+    "name": "Demo API – Happy Path (No Tests)",
+    "description": "Happy-path requests only for the local Demo API (Node.js + Express).\n\nIntended for generating tests with Postbot in Postman.\n\nNotes:\n- Base URL defaults to http://localhost:3000\n- Data is in-memory and resets on server restart\n- DELETE uses user ID in the request body (DELETE /api/users)\n- Login is simulated (POST /api/login)\n- No tests or scripts included",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "id": "be195725-2e81-456e-a5ea-0b05057000d1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /health error",
+          "id": "34dffb65-d93b-4c72-ae51-3aabc61de840",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "92640888-38bf-48d8-8595-94e6abe880c6"
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "GET /api/users (paginated)",
+          "id": "b156be45-4502-44cd-a401-59ae7aeebad8",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?page=1&per_page=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/users/all",
+          "id": "fa2c75de-e14c-4086-8cb8-a5e019a2ef23",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/users/2",
+          "id": "341bf40e-9289-4696-97a8-92f5f299822f",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/users (create)",
+          "id": "f6b185f8-0291-40d2-84db-3ff399f35f0a",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"JA Demo\",\n  \"job\": \"QA Lead\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /api/users/2 (update)",
+          "id": "7f634509-7174-43b3-af1d-586464d60635",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"JA Demo Updated\",\n  \"job\": \"QA Lead\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/users (delete by body id)",
+          "id": "2a9d5360-ad88-49e2-873d-bb62dcc9c19f",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "4b04e5d6-b354-423b-a504-d9724591617e"
+    },
+    {
+      "name": "Auth (Simulated)",
+      "item": [
+        {
+          "name": "POST /api/login",
+          "id": "28d32a59-51a0-4c5a-bc3e-76674de8f1a1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"cityslicka\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "a42f0e7b-30c1-4b7e-9110-8788fd2bc5f5"
+    }
+  ],
+  "variable": [
+    {
+      "id": "e33bbaa6-cf11-4d9a-9769-078969d673ea",
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "id": "23f53e0b-16e6-419a-8692-43c0264b9fef",
+      "key": "createdUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "6dc6a1a8-bc30-4296-86f0-ffef37f3cae1",
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

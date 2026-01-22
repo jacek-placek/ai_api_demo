@@ -1,0 +1,1044 @@
+{
+  "info": {
+    "_postman_id": "ccf13627-58a2-4180-961e-805998bbf991",
+    "name": "Demo API – Local (AI Testing Demo)",
+    "description": "Postman collection for the local Demo API (Node.js + Express). Includes happy-path and error-handling requests.\n\nBase URL defaults to http://localhost:3000.\n\nNotes:\n- Data is in-memory and resets on server restart.\n- Delete uses user ID in the request body (DELETE /api/users).\n- Login is simulated (POST /api/login).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health (OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has status=ok and time', () => {",
+                  "  pm.expect(json).to.have.property('status', 'ok');",
+                  "  pm.expect(json).to.have.property('time');",
+                  "  pm.expect(json.time).to.be.a('string');",
+                  "});"
+                ],
+                "id": "45d5938d-b01e-499f-a207-b6d168a29736"
+              }
+            }
+          ],
+          "id": "266cfce8-0895-41c0-920c-6aa588375c9e",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /health (Error) 500",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "8ebec2f9-9f1b-4d76-a1a7-36e1040e9d7e",
+                "exec": [
+                  "// Parse response JSON",
+                  "const json = pm.response.json();",
+                  "",
+                  "// 1. Verify status code is 500",
+                  "pm.test('Status code is 500', () => {",
+                  "    pm.response.to.have.status(500);",
+                  "});",
+                  "",
+                  "// 2. Verify response schema has \"error\" and \"time\" properties",
+                  "pm.test('Response has correct schema with error and time properties', () => {",
+                  "    pm.expect(json).to.have.property('error');",
+                  "    pm.expect(json).to.have.property('time');",
+                  "    pm.expect(json.error).to.be.a('string');",
+                  "    pm.expect(json.time).to.be.a('string');",
+                  "});",
+                  "",
+                  "// 3. Verify error message content",
+                  "pm.test('Error message is \"Internal error (simulated)\"', () => {",
+                  "    pm.expect(json.error).to.eql('Internal error (simulated)');",
+                  "});",
+                  "",
+                  "// 4. Verify time is a valid ISO 8601 timestamp string",
+                  "pm.test('Time property is a valid ISO 8601 timestamp', () => {",
+                  "    const iso8601Regex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{3})?Z$/;",
+                  "    pm.expect(json.time).to.match(iso8601Regex);",
+                  "    ",
+                  "    // Also verify it parses to a valid date",
+                  "    const parsedDate = new Date(json.time);",
+                  "    pm.expect(parsedDate.toString()).to.not.eql('Invalid Date');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "a0567968-6a3e-4842-a0cb-da15b8b0cb1a",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health?fail=500",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ],
+              "query": [
+                {
+                  "key": "fail",
+                  "value": "500"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "aff9b6b1-385f-4f13-9ab8-7e87ddcb33d4"
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "GET /api/users (Paginated, OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has pagination fields', () => {",
+                  "  ['page','per_page','total','total_pages','data'].forEach(k => pm.expect(json).to.have.property(k));",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});",
+                  "pm.test('User items have required fields', () => {",
+                  "  json.data.forEach(u => {",
+                  "    pm.expect(u).to.have.property('id');",
+                  "    pm.expect(u).to.have.property('email');",
+                  "    pm.expect(u).to.have.property('first_name');",
+                  "    pm.expect(u).to.have.property('last_name');",
+                  "  });",
+                  "});"
+                ],
+                "id": "047f557d-10f2-442f-a341-bbb032a19e15"
+              }
+            }
+          ],
+          "id": "b7d68332-f729-4bff-9d4e-77a366bda8e6",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?page=1&per_page=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/users (Paginated, Error: invalid page)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error message', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "392aa458-ac33-4cf8-95e2-1ff70f1b315d"
+              }
+            }
+          ],
+          "id": "4f9b2265-be82-459d-85e3-dbca3e87a514",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?page=0&per_page=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "per_page",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/users/all (OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has total and data[]', () => {",
+                  "  pm.expect(json).to.have.property('total');",
+                  "  pm.expect(json).to.have.property('data');",
+                  "  pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ],
+                "id": "85009c09-aab0-4e0b-92ef-0654e0ddb9da"
+              }
+            }
+          ],
+          "id": "6cf0e7d7-56df-4d3a-9cbd-18241c9ce41d",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/users/:id (OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has data and support', () => {",
+                  "  pm.expect(json).to.have.property('data');",
+                  "  pm.expect(json).to.have.property('support');",
+                  "});",
+                  "pm.test('data has required fields', () => {",
+                  "  const u = json.data;",
+                  "  ['id','email','first_name','last_name'].forEach(k => pm.expect(u).to.have.property(k));",
+                  "});"
+                ],
+                "id": "43fb92ae-ca66-493e-a32f-e421728b2397"
+              }
+            }
+          ],
+          "id": "8ce9f139-24e4-4747-bb8e-4f047e3c0df6",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/users/:id (Error: not found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "d12d36b3-3734-45ac-87f8-d979d897fcad"
+              }
+            }
+          ],
+          "id": "c32b35f3-5afe-4c0d-b368-54c7955591fb",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "999999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/users (OK - create user)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has id and createdAt', () => {",
+                  "  pm.expect(json).to.have.property('id');",
+                  "  pm.expect(json).to.have.property('createdAt');",
+                  "});",
+                  "pm.test('Echoes name/job', () => {",
+                  "  pm.expect(json).to.have.property('name');",
+                  "  pm.expect(json).to.have.property('job');",
+                  "});",
+                  "// Save id for later steps",
+                  "pm.collectionVariables.set('createdUserId', String(json.id));"
+                ],
+                "id": "864968b9-37b4-4caa-a7ad-c679994e0e63"
+              }
+            }
+          ],
+          "id": "1bfb8a6b-aff2-484b-876a-0c00f337ef20",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"JA Demo\",\n  \"job\": \"QA Lead\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/users (Error: missing name)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "bbe34b96-fcf1-4128-ae0a-01e7f7d573d2"
+              }
+            }
+          ],
+          "id": "e46e589d-9df9-4184-8add-31f819ddef6a",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"job\": \"QA Lead\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/users (Error: name too short)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "0a837eac-a98d-4ce2-bf21-f47539a16fb3"
+              }
+            }
+          ],
+          "id": "f5687d2d-1665-4aea-87b7-0b4742e358c5",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"J\",\n  \"job\": \"QA Lead\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /api/users/:id (OK - update user)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has updatedAt', () => pm.expect(json).to.have.property('updatedAt'));"
+                ],
+                "id": "4ebd05ca-9d25-4b17-b081-98d8f0c87fd3"
+              }
+            }
+          ],
+          "id": "a487d25f-9387-4b4b-bc39-c93af07b3eaf",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"JA Demo Updated\",\n  \"job\": \"QA Lead\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /api/users/:id (Error: not found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "e8aa7d69-8a23-4856-90b7-6e3264c5065c"
+              }
+            }
+          ],
+          "id": "83020234-c7b0-418c-95c1-25604d977099",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Someone\",\n  \"job\": \"QA\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "999999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /api/users/:id (Error: invalid name)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "2458707b-e6cc-4a53-9d74-03dd31d14d02"
+              }
+            }
+          ],
+          "id": "3f702750-2058-4ac3-9a2a-fd22329dcdac",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"A\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/users (OK - delete by body id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', () => pm.response.to.have.status(204));",
+                  "pm.test('Body is empty', () => pm.expect(pm.response.text()).to.be.oneOf(['', ' ']));"
+                ],
+                "id": "f78d63f8-1659-411a-96e4-99e17ccf7d5d"
+              }
+            }
+          ],
+          "id": "c770fbac-b54e-447e-bc86-5514a191e05f",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/users (OK - delete createdUserId if set)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const id = pm.collectionVariables.get('createdUserId');",
+                  "if (!id) {",
+                  "  // Provide a safe default for demo runs",
+                  "  pm.collectionVariables.set('createdUserId', '1');",
+                  "}"
+                ],
+                "id": "9577bf05-4686-450c-9081-155ee1324c2c"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 204', () => pm.response.to.have.status(204));"
+                ],
+                "id": "a8193ad2-b9f8-4a9c-a9b3-1fb743b9b1f5"
+              }
+            }
+          ],
+          "id": "9b1247ed-16fb-4998-ae1e-73effba2aad8",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{createdUserId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/users (Error: missing id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "e9a6ce83-a568-4bb4-9507-4089cb9bb2f3"
+              }
+            }
+          ],
+          "id": "9e970946-7e2c-49ef-a93d-7506a0b77e7d",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/users (Error: id wrong type)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "5a808272-7033-4090-8f8e-15268c38678d"
+              }
+            }
+          ],
+          "id": "2eeebf4d-32be-4746-86e9-60e3610a9e36",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"2\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /api/users (Error: not found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "25e55a10-6557-468e-9330-dd11f2ada17f"
+              }
+            }
+          ],
+          "id": "20e68e9f-b71b-4a60-9896-15f5d4685edf",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 999999\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "db4e81d9-8fa4-4078-9894-e2e099e9de57"
+    },
+    {
+      "name": "Auth (Simulated)",
+      "item": [
+        {
+          "name": "POST /api/login (OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has token', () => {",
+                  "  pm.expect(json).to.have.property('token');",
+                  "  pm.expect(json.token).to.be.a('string');",
+                  "});",
+                  "pm.collectionVariables.set('authToken', json.token);"
+                ],
+                "id": "79413c32-7ea3-4c9f-b7ff-7670e1ae883a"
+              }
+            }
+          ],
+          "id": "523fe2db-d65e-4e00-9d6f-e70e049672bf",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"cityslicka\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/login (Error: missing email)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "8bd9b970-af9c-430d-92c2-73f171ac9c8f"
+              }
+            }
+          ],
+          "id": "a5e1e1a0-36d9-4e0d-84ce-8fc22e6e4148",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"cityslicka\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/login (Error: missing password)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "670556a1-b3f1-47a3-84c1-984a62b3a556"
+              }
+            }
+          ],
+          "id": "d3bd26a9-5eab-47b0-864c-a8f4e4da854f",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/login (Error: invalid credentials)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has error', () => pm.expect(json).to.have.property('error'));"
+                ],
+                "id": "eb6129c6-3fd3-4c78-bf0f-dee0423bcbd7"
+              }
+            }
+          ],
+          "id": "a16d2f5b-adea-48b7-b519-0be7d782c868",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"wrong\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "fe851528-47ee-4c9c-9c30-bae8a3724c84"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Collection-level pre-request script (optional)",
+          "// Placeholder for future auth headers etc."
+        ],
+        "id": "144b97d8-fe6c-4737-a64d-413cfcec7774"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Collection-level tests (run for all requests)",
+          "pm.test('Response time is under 2000ms', function () {",
+          "  pm.expect(pm.response.responseTime).to.be.below(2000);",
+          "});"
+        ],
+        "id": "d2bc2f98-5889-414e-b91e-444dd195af62"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "4d38b4fd-6ce6-407e-8a92-f095344917d3",
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "id": "5a1c1a10-d53c-4a98-94f3-8530c0e9a6a5",
+      "key": "createdUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "8a0fa7f5-fb96-4e15-9b7f-149e48c5bd3b",
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
