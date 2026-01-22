@@ -190,6 +190,61 @@
       "response": []
     },
     {
+      "name": "POST /api/login",
+      "id": "4e8f585b-d4cc-45d3-8d7c-f0e527212c63",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"cityslicka\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "login"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Parse the JSON response",
+              "const jsonResponse = pm.response.json();",
+              "",
+              "// Extract the token field from the response",
+              "const tokenValue = jsonResponse.token;",
+              "",
+              "// Store the token in collection variables",
+              "if (tokenValue) {",
+              "    pm.collectionVariables.set('token', tokenValue);",
+              "    console.log('Token saved to collection variables:', tokenValue);",
+              "}",
+              "",
+              "// Test to verify the token exists in the response",
+              "pm.test('Response contains a token', function() {",
+              "    pm.expect(jsonResponse).to.have.property('token');",
+              "    pm.expect(jsonResponse.token).to.be.a('string');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
       "name": "/health",
       "id": "5a50635c-25bb-4ebc-b984-876e78204371",
       "request": {
@@ -210,10 +265,9 @@
   ],
   "variable": [
     {
-      "id": "6bc4c552-6615-45ed-8ae5-fded1f5d1232",
+      "id": "c8e61920-e9fd-44ba-bb82-72549c268738",
       "key": "baseURL",
-      "value": "",
-      "type": "default"
+      "value": ""
     }
   ]
 }
