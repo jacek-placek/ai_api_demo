@@ -11,8 +11,8 @@ app.use(express.json());
 // In-memory "database" (resets on restart)
 let nextId = 3;
 let users = [
-  { id: 1, email: 'janet.weaver@example.com', first_name: 'Janet', last_name: 'Weaver' },
-  { id: 2, email: 'emma.wong@example.com', first_name: 'Emma', last_name: 'Wong' },
+  { id: 1, email: 'janet.weaver@example.com', first_name: 'Janet', last_name: 'Weaver', job: "QA Engineer" },
+  { id: 2, email: 'emma.wong@example.com', first_name: 'Emma', last_name: 'Wong', job: "Product Owner" },
 ];
 
 // Utility
@@ -101,6 +101,7 @@ app.post('/api/users', (req, res) => {
     email: `${created.name.toLowerCase().replace(/\s+/g, '.')}@example.com`,
     first_name: created.name.split(' ')[0],
     last_name: created.name.split(' ').slice(1).join(' ') || 'User',
+    job: created.job
   });
 
   res.status(201).json(created);
